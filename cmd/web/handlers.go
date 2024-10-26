@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 // homeHandler writes a byte slice containing "Hello from Snppetbox"
@@ -17,7 +18,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 // snippetView Display a specifc snippet
 func snippetViewHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display a specifc snippet"))
+	//Extract the value of id parameter from the query string and
+	//convert to integer. If its not a integer show the not found page
+	ID, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || ID <= 0 {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Fprintf(w, "Display a specific snippet with ID %d", ID)
 }
 
 // snippetCreate Create a new snippet
@@ -29,12 +37,4 @@ func snippetCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("Create a new snippet"))
-}
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", homeHandler)
-	mux.HandleFunc("/snippet/view", snippetViewHandler)
-	mux.HandleFunc("/snippet/create", snippetCreateHandler)
-	log.Println("Stating server on:4000")
-	log.Fatal(http.ListenAndServe(":4000", mux))
 }
