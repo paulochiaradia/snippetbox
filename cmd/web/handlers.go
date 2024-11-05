@@ -15,9 +15,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
-	//Using the tamplate.ParseFiles to the tamplate file
-	ts, err := template.ParseFiles("/ui/home.html")
+	ts, err := template.ParseFiles("ui/html/pages/home.html")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
